@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:..
+#valgrind --verbose ./test 2>ll.txt
+DISPLAY=:99 ./test

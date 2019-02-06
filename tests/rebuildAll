@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [[ $1 == "clean" ]]; then
+    cd ..;
+    /usr/lib/x86_64-linux-gnu/qt5/bin/qmake DarknetProjectManager.pro
+    make clean;
+    make;
+    cd tests;
+    make clean;
+    make;
+else
+    cd ..;make;cd tests;make;
+fi;
