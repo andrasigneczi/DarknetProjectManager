@@ -183,7 +183,11 @@ void Project::parseLabelFileString(string content) {
         //cout << "calculated bounding values: " << id << " " << boundingRec.left()
         //<< " " << boundingRec.top() << " " << boundingRec.width() << " " << boundingRec.height() << endl;
         
-        rectsAndLabels.push_back({mNames[id], {centerX, centerY, width, height}});
+        if(id < (int)mNames.size()) {
+            rectsAndLabels.push_back({mNames[id], {centerX, centerY, width, height}});
+        } else {
+            std::cerr << "ERROR: Label is missing for id '" << id << "'!!!\n";
+        }
         //cout << "Filling rec and labels done\n";
         
     }

@@ -23,6 +23,7 @@ LabelingCanvas::LabelingCanvas(QWidget *parent)
 , mTransferRateW(1.)
 , mTransferRateH(1.)
 , mZoomBox(0, 0, 27, 30)
+, mGrayBoxBackground(true)
 {
     setMouseTracking(true);
 }
@@ -86,6 +87,7 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
     QBrush brRed(Qt::GlobalColor::red, Qt::SolidPattern);
     QBrush brBlue(Qt::GlobalColor::blue, Qt::SolidPattern);
     QBrush brWhite(Qt::GlobalColor::white, Qt::SolidPattern);
+    QBrush brBlack(Qt::GlobalColor::black, Qt::SolidPattern);
     const int tickness = 2;
     
     for(size_t i = 0; i < mRectAndLabelData.size(); ++i) {
@@ -99,13 +101,24 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
         }
         
         if((int)i != mFocusedRect && (int)i != mSelectedRect) {
-            p.setPen(QPen(brWhite, tickness, Qt::SolidLine));
+            if(mGrayBoxBackground) {
+                p.setPen(QPen(brWhite, tickness, Qt::SolidLine));
+            } else {
+                p.setPen(QPen(brBlack, tickness, Qt::SolidLine));
+            }
         }
         
         QRectF r = convertedRect(i);
         // the mOriginalImage or part of that is scaled to the canvas, that rate must be calcualated first
         r = transfer(r);
         
+        p.setOpacity(0.3);
+        if(mGrayBoxBackground) {
+            p.fillRect(r, Qt::GlobalColor::black);
+        } else {
+            p.fillRect(r, Qt::GlobalColor::white);
+        }
+        p.setOpacity(1.);
         p.drawRect(r);
         p.drawText(r.left() + 10, r.top(),
                    r.width(), r.height(),
@@ -591,4 +604,9 @@ void LabelingCanvas::updateBoundingBoxData(int index, string label) {
     } else {
         emit boundingboxSelection(originalRectAndLabel(index).mLabel, position, size);
     }
+}
+
+void LabelingCanvas::switchGrayBoxBackground() {
+    mGrayBoxBackground = !mGrayBoxBackground;
+    repaint();
 }

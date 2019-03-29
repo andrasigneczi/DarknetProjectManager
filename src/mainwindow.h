@@ -22,6 +22,7 @@ public slots:
     // in the QLineEdit
     void boundingboxSelection(string label, string position, string size);
     void savePressed();
+    void grayPressed();
 
     // toolbar button slots
     void newButtonTriggered(bool checked = false);

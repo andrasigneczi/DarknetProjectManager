@@ -86,6 +86,7 @@ MainWindow::MainWindow(Project& project)
     //mCanvas->setFixedSize(800, 550);
     
     QPushButton* saveBtn = new QPushButton("Save All");
+    QPushButton* grayBtn = new QPushButton("Invert Boxes");
     mLabelEdit = new MyLineEdit(mListWidget);
     QVBoxLayout* toolLayout = new QVBoxLayout;
 
@@ -99,8 +100,8 @@ MainWindow::MainWindow(Project& project)
 
     toolLayout->addLayout(lineLayout);
     toolLayout->addWidget(saveBtn);
-    
-    
+    toolLayout->addWidget(grayBtn);
+
     QGridLayout* underCanvasLayout = new QGridLayout;
     underCanvasLayout->addWidget(new QLabel("Label string:"), 0, 0);
     mLabelStrUnderMousePointer = new QLabel;
@@ -126,6 +127,9 @@ MainWindow::MainWindow(Project& project)
 
     QObject::connect(saveBtn, SIGNAL(pressed()),
         this, SLOT(savePressed()));
+
+    QObject::connect(grayBtn, SIGNAL(pressed()),
+        this, SLOT(grayPressed()));
         
     QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString &)),
         mCanvas, SLOT(labelChanged(const QString &)));
@@ -205,6 +209,10 @@ void MainWindow::savePressed() {
         // update bounding rect list
         saveRecAndLabelData(index);
     }
+}
+
+void MainWindow::grayPressed() {
+    mCanvas->switchGrayBoxBackground();
 }
 
 void MainWindow::newButtonTriggered(bool checked /*= false*/) {

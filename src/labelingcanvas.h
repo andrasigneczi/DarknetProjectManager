@@ -59,7 +59,8 @@ public:
     double pixmapHeight();
     int imageWidth() { return mOriginalImage.width(); }
     int imageHeight() { return mOriginalImage.height(); }
-
+    void switchGrayBoxBackground();
+    
     // rect calculation from or to normrect
     static Project::NormRect calcNormalizedRec(double boundingLeft, double boundingTop, double boundingWidth, double boundingHeight, double imageWidth, double imageHeight);
     static QRectF calcBoundingRec(double centerX, double centerY, double normWidth, double normHeight, double imageWidth, double imageHeight);
@@ -114,6 +115,7 @@ private:
     string mLastLabel;
     QRectF mLastMovingRect;
     const QRect mZoomBox;
+    bool mGrayBoxBackground;
 };
 
 #endif // __LABELINGCANVAS_H__
