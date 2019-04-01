@@ -25,6 +25,7 @@ LabelingCanvas::LabelingCanvas(QWidget *parent)
 , mZoomBox(0, 0, 27, 35)
 , mGrayBoxBackground(true)
 , mFocusedZoomOn(false)
+, mBoxesHidden(false)
 {
     setMouseTracking(true);
 }
@@ -119,17 +120,19 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
         // the mOriginalImage or part of that is scaled to the canvas, that rate must be calcualated first
         r = transfer(r);
         
-        p.setOpacity(0.3);
-        if(mGrayBoxBackground) {
-            p.fillRect(r, Qt::GlobalColor::black);
-        } else {
-            p.fillRect(r, Qt::GlobalColor::white);
+        if(!mBoxesHidden || (int)i == mFocusedRect || (int)i == mSelectedRect) {
+            p.setOpacity(0.3);
+            if(mGrayBoxBackground) {
+                p.fillRect(r, Qt::GlobalColor::black);
+            } else {
+                p.fillRect(r, Qt::GlobalColor::white);
+            }
+            p.setOpacity(1.);
+            p.drawRect(r);
+            p.drawText(r.left() + 10, r.top(),
+                       r.width(), r.height(),
+                       Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
         }
-        p.setOpacity(1.);
-        p.drawRect(r);
-        p.drawText(r.left() + 10, r.top(),
-                   r.width(), r.height(),
-                   Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
         
         if((int)i == mSelectedRect) {
             // resizing helper boxes
@@ -146,7 +149,6 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
         p.setPen(QPen(brBlue, tickness, Qt::DotLine));
         p.drawRect(transfer(mMovingRect));
     }
-    //p.setCompositionMode(QPainter::CompositionMode_SourceOver);
 }
 
 void LabelingCanvas::drawHelperBoxes(QPainter& p, QRectF rect) {
@@ -632,5 +634,10 @@ void LabelingCanvas::updateBoundingBoxData(int index, string label) {
 
 void LabelingCanvas::switchGrayBoxBackground() {
     mGrayBoxBackground = !mGrayBoxBackground;
+    repaint();
+}
+
+void LabelingCanvas::hideBoxes(bool hide) {
+    mBoxesHidden = hide;
     repaint();
 }

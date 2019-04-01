@@ -87,6 +87,8 @@ MainWindow::MainWindow(Project& project)
     
     QPushButton* saveBtn = new QPushButton("Save All");
     QPushButton* grayBtn = new QPushButton("Invert Boxes");
+    mHideBoxesBtn = new QPushButton("Boxes Visible");
+    mHideBoxesBtn->setCheckable(true);
     mLabelEdit = new MyLineEdit(mListWidget);
     QVBoxLayout* toolLayout = new QVBoxLayout;
 
@@ -99,8 +101,12 @@ MainWindow::MainWindow(Project& project)
     lineLayout->addWidget(mSize = new QLabel(""), 2, 1);
 
     toolLayout->addLayout(lineLayout);
-    toolLayout->addWidget(saveBtn);
-    toolLayout->addWidget(grayBtn);
+    
+    QGridLayout* buttonGrid = new QGridLayout;
+    buttonGrid->addWidget(saveBtn, 0, 0);
+    buttonGrid->addWidget(grayBtn, 0, 1);
+    buttonGrid->addWidget(mHideBoxesBtn, 1, 0);
+    toolLayout->addLayout(buttonGrid);
 
     QGridLayout* underCanvasLayout = new QGridLayout;
     mMousePosition = new QLabel;
@@ -134,6 +140,9 @@ MainWindow::MainWindow(Project& project)
 
     QObject::connect(grayBtn, SIGNAL(pressed()),
         this, SLOT(grayPressed()));
+
+    QObject::connect(mHideBoxesBtn, SIGNAL(toggled(bool)),
+        this, SLOT(hideBoxesToggled(bool)));
         
     QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString &)),
         mCanvas, SLOT(labelChanged(const QString &)));
@@ -265,4 +274,13 @@ void MainWindow::updateUnderMouseLabels(string label) {
 
 void MainWindow::mousePositionChange(int x, int y) {
     mMousePosition->setText(QString::number(x) + "; " + QString::number(y));
+}
+
+void MainWindow::hideBoxesToggled(bool checked) {
+    if(checked) {
+        mHideBoxesBtn->setText("Boxes Hidden");
+    } else {
+        mHideBoxesBtn->setText("Boxes Visible");
+    }
+    mCanvas->hideBoxes(checked);
 }

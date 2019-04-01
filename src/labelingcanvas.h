@@ -60,7 +60,8 @@ public:
     int imageWidth() { return mOriginalImage.width(); }
     int imageHeight() { return mOriginalImage.height(); }
     void switchGrayBoxBackground();
-    
+    void hideBoxes(bool hide);
+
     // rect calculation from or to normrect
     static Project::NormRect calcNormalizedRec(double boundingLeft, double boundingTop, double boundingWidth, double boundingHeight, double imageWidth, double imageHeight);
     static QRectF calcBoundingRec(double centerX, double centerY, double normWidth, double normHeight, double imageWidth, double imageHeight);
@@ -128,6 +129,7 @@ private:
     const QRect mZoomBox;
     bool mGrayBoxBackground;
     bool mFocusedZoomOn;
+    bool mBoxesHidden;
 };
 
 #endif // __LABELINGCANVAS_H__

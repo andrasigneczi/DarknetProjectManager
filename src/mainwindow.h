@@ -7,6 +7,7 @@
 
 class LabelingCanvas;
 class QLabel;
+class QPushButton;
 
 class Q_DECL_EXPORT MainWindow : public QMainWindow {
     Q_OBJECT
@@ -34,6 +35,8 @@ public slots:
     void updateUnderMouseLabels(string label);
     void mousePositionChange(int x, int y);
     
+    void hideBoxesToggled(bool checked);
+    
 private:
     void saveRecAndLabelData(size_t index);
 
@@ -45,6 +48,7 @@ private:
     QLabel* mSize;
     QLabel* mLabelStrUnderMousePointer;
     QLabel* mMousePosition;
+    QPushButton* mHideBoxesBtn;
 };
 
 #endif // __MAINWINDOW_H__
