@@ -69,6 +69,7 @@ public:
 signals:
     void boundingboxSelection(string label, string position, string size);
     void updateUnderMouseLabels(string label);
+    void mousePositionChange(int x, int y);
 
 public slots:
     void labelChanged(const QString &text);

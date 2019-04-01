@@ -277,6 +277,9 @@ void LabelingCanvas::mouseMoveEvent(QMouseEvent*me) {
     mouseX = me->x();
     mouseY = me->y();
 
+    // calculating the pointed pixel position on the image
+    emit mousePositionChange(round(mouseX / mTransferRateW * mZoom), round(mouseY / mTransferRateW * mZoom));
+
     if(mousePressed) {
         setCursor(Qt::ClosedHandCursor);
         if(mSelectedRect == -1) {

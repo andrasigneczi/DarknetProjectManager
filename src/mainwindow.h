@@ -32,7 +32,8 @@ public slots:
     void resizeEvent(QResizeEvent *event) override;
     
     void updateUnderMouseLabels(string label);
-
+    void mousePositionChange(int x, int y);
+    
 private:
     void saveRecAndLabelData(size_t index);
 
@@ -43,6 +44,7 @@ private:
     QLabel* mPosition;
     QLabel* mSize;
     QLabel* mLabelStrUnderMousePointer;
+    QLabel* mMousePosition;
 };
 
 #endif // __MAINWINDOW_H__

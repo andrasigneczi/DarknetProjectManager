@@ -103,9 +103,13 @@ MainWindow::MainWindow(Project& project)
     toolLayout->addWidget(grayBtn);
 
     QGridLayout* underCanvasLayout = new QGridLayout;
-    underCanvasLayout->addWidget(new QLabel("Label string:"), 0, 0);
+    mMousePosition = new QLabel;
+    underCanvasLayout->addWidget(new QLabel("Mouse position:"), 0, 0);
+    underCanvasLayout->addWidget(mMousePosition, 0, 1, Qt::AlignLeft);
+
+    underCanvasLayout->addWidget(new QLabel("Label string:"), 0, 2);
     mLabelStrUnderMousePointer = new QLabel;
-    underCanvasLayout->addWidget(mLabelStrUnderMousePointer, 0, 1, Qt::AlignLeft);
+    underCanvasLayout->addWidget(mLabelStrUnderMousePointer, 0, 3, Qt::AlignLeft);
     
     grid->addWidget(mCanvas, 0, 0, 2, 1);
     grid->addLayout(underCanvasLayout, 2, 0);
@@ -145,6 +149,9 @@ MainWindow::MainWindow(Project& project)
 
     QObject::connect(mCanvas, SIGNAL(updateUnderMouseLabels(string)),
         this, SLOT(updateUnderMouseLabels(string)));
+
+    QObject::connect(mCanvas, SIGNAL(mousePositionChange(int,int)),
+        this, SLOT(mousePositionChange(int,int)));
 }
 
 void MainWindow::saveRecAndLabelData(size_t index) {
@@ -254,4 +261,8 @@ void MainWindow::updateUnderMouseLabels(string label) {
     if(mLabelStrUnderMousePointer->text() != label.c_str()) {
         mLabelStrUnderMousePointer->setText(label.c_str());
     }
+}
+
+void MainWindow::mousePositionChange(int x, int y) {
+    mMousePosition->setText(QString::number(x) + "; " + QString::number(y));
 }
