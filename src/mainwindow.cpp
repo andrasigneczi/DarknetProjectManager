@@ -107,8 +107,8 @@ MainWindow::MainWindow(Project& project)
     mLabelStrUnderMousePointer = new QLabel;
     underCanvasLayout->addWidget(mLabelStrUnderMousePointer, 0, 1, Qt::AlignLeft);
     
-    grid->addWidget(mCanvas, 0, 0);
-    grid->addLayout(underCanvasLayout, 1, 0);
+    grid->addWidget(mCanvas, 0, 0, 2, 1);
+    grid->addLayout(underCanvasLayout, 2, 0);
     grid->addWidget(mListWidget, 0, 1);
     grid->addLayout(toolLayout, 1, 1);
     

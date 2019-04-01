@@ -22,8 +22,9 @@ LabelingCanvas::LabelingCanvas(QWidget *parent)
 , mImageDragged(false)
 , mTransferRateW(1.)
 , mTransferRateH(1.)
-, mZoomBox(0, 0, 27, 30)
+, mZoomBox(0, 0, 27, 35)
 , mGrayBoxBackground(true)
+, mFocusedZoomOn(false)
 {
     setMouseTracking(true);
 }
@@ -71,9 +72,15 @@ void LabelingCanvas::paintEvent(QPaintEvent* pe) {
 void LabelingCanvas::drawZoomIcons(QPainter& p) {
     p.setFont(QFont("times",24));
     p.setPen(QPen(QColor("#eeeeee")));
-    p.fillRect(width()-33, 5, mZoomBox.width(), 70, QBrush(QColor("#000000")));
+    p.fillRect(width()-33, 5, mZoomBox.width(), 135, QBrush(QColor("#000000")));
     p.drawText(QRect(width()-29, 5, mZoomBox.width(), mZoomBox.height()), Qt::AlignLeft, "+");
     p.drawText(QRect(width()-25, 35, mZoomBox.width(), mZoomBox.height()), Qt::AlignLeft, "-");
+    p.setFont(QFont("times",16));
+    p.drawText(QRect(width()-26, 75, mZoomBox.width(), mZoomBox.height()), Qt::AlignLeft, "R");
+    if(mFocusedZoomOn) {
+        p.setPen(QPen(Qt::GlobalColor::green));
+    }
+    p.drawText(QRect(width()-26, 110, mZoomBox.width(), mZoomBox.height()), Qt::AlignLeft, "F");
 }
 
 void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
@@ -334,38 +341,52 @@ void LabelingCanvas::mousePressEvent(QMouseEvent*me) {
     mousePressedY = me->y();
     setCursor(Qt::OpenHandCursor);
 
-    if(me->modifiers() == Qt::ShiftModifier){
-    } else if(me->modifiers() == Qt::ControlModifier){
-    }
-    
     if(QRect(width()-30, 5, mZoomBox.width(), mZoomBox.height()).contains(mousePressedX, mousePressedY) && mZoom > 0.1 + 1e-6) {
         mFocusedRect = -1;
         emit boundingboxSelection("", "", "");
-        // Zoom in
-        // Do the zooming from the middle of the canvas
-        double s1 = mOriginalImage.width()  / 2. * mZoom;
-        double s2 = mOriginalImage.width()  / 2. * (mZoom - 0.1);
-        mPixmapPos.setX(mPixmapPos.x() - (s2 - s1));
-        s1 = mOriginalImage.height()  / 2. * mZoom;
-        s2 = mOriginalImage.height()  / 2. * (mZoom - 0.1);
-        mPixmapPos.setY(mPixmapPos.y() - (s2 - s1));
-        mZoom -= 0.1;
+        centeredZoom(mZoom - 0.1);
     } else if(QRect(width()-25, 35, mZoomBox.width(), mZoomBox.height()).contains(mousePressedX, mousePressedY)) {
         mFocusedRect = -1;
         emit boundingboxSelection("", "", "");
-        double s1 = mOriginalImage.width()  / 2. * mZoom;
-        double s2 = mOriginalImage.width()  / 2. * (mZoom - 0.1);
-        mPixmapPos.setX(mPixmapPos.x() + (s2 - s1));
-        s1 = mOriginalImage.height()  / 2. * mZoom;
-        s2 = mOriginalImage.height()  / 2. * (mZoom - 0.1);
-        mPixmapPos.setY(mPixmapPos.y() + (s2 - s1));
-        mZoom += 0.1;
+        centeredZoom(mZoom + 0.1);
+    } else if(QRect(width()-26, 75, mZoomBox.width(), mZoomBox.height()).contains(mousePressedX, mousePressedY)) {
+        mFocusedRect = -1;
+        emit boundingboxSelection("", "", "");
+        mPixmapPos.setX(0);
+        mPixmapPos.setY(0);
+        mZoom = 1.;
+    } else if(QRect(width()-26, 105, mZoomBox.width(), mZoomBox.height()).contains(mousePressedX, mousePressedY)) {
+        mFocusedZoomOn = !mFocusedZoomOn;
+    } else if(mFocusedZoomOn) {
+        mFocusedZoomOn = false;
+        mFocusedRect = -1;
+        emit boundingboxSelection("", "", "");
+        
+        // move the clicked position to the middle of the canvas
+        mPixmapPos.setX(((double)mousePressedX - width() / 2.) / mTransferRateW * mZoom);
+        mPixmapPos.setY(((double)mousePressedY - height() / 2.) / mTransferRateH * mZoom);
+        
+        // zoom the image and correct the position
+        const double newZoom = 0.2;
+        if(mZoom > newZoom) {
+            centeredZoom(newZoom);
+        }
     } else if(mSelectedRect != -1) {
         updateBoundingBoxData(mSelectedRect, "");
         mFocusedRect = mSelectedRect;
     }
     repaint();
     QWidget::mousePressEvent(me);
+}
+
+void LabelingCanvas::centeredZoom(double newZoom) {
+    double s1 = width()  / 2. / mTransferRateW * mZoom;
+    double s2 = width()  / 2. / mTransferRateW * newZoom;
+    mPixmapPos.setX(mPixmapPos.x() - (s2 - s1));
+    s1 = height()  / 2. / mTransferRateH * mZoom;
+    s2 = height()  / 2. / mTransferRateH * newZoom;
+    mPixmapPos.setY(mPixmapPos.y() - (s2 - s1));
+    mZoom = newZoom;
 }
 
 void LabelingCanvas::mouseReleaseEvent(QMouseEvent*me) {

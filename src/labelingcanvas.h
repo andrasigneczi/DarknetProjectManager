@@ -87,7 +87,14 @@ private:
 
     void drawZoomIcons(QPainter& p);
     void calcBoxZoomRate();
+    void centeredZoom(double newZoom);
+    
+    // convert the rect from the original image coordinate system to the
+    // screen/canvas coordinate system
     QRectF transfer(QRectF r);
+    
+    // convert the rect from screen/canvas coordinate system to the
+    // the original image coordinate system
     QRectF transferBack(QRectF r);
     
     //QPixmap mImage;
@@ -105,7 +112,10 @@ private:
 
     vector<RectAndLabelData> mRectAndLabelData;
     double mZoom;
+    
+    // top-right corner of the sub-image which is copied to the canvas 0,0 position
     QPoint mPixmapPos;
+    
     bool mFitToWidth;
     bool mImageDragged;
     QPoint mPixmapDraggedPos;
@@ -116,6 +126,7 @@ private:
     QRectF mLastMovingRect;
     const QRect mZoomBox;
     bool mGrayBoxBackground;
+    bool mFocusedZoomOn;
 };
 
 #endif // __LABELINGCANVAS_H__

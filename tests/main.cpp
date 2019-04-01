@@ -13,7 +13,8 @@ int main (int argc, char* argv[]) {
     //string newPath("/home/andrej/src/EXTERNAL/darknet/snowman/YOLOv3-Training-Snowman-Detector");
     //string newPath(".");
     //string newPath("/home/andrej/src/EXTERNAL/darknet_cuda/coc");
-    string newPath("/home/andrej/src/DarkCOCBot/Backend/tests/darknet_cfg");
+    //string newPath("/home/andrej/src/DarkCOCBot/Backend/tests/darknet_cfg");
+    string newPath("darknet_cfg");
     QString path = QDir::currentPath();    
     if(QDir::setCurrent(newPath.c_str())) {
         
