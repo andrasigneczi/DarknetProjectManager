@@ -280,7 +280,7 @@ void LabelingCanvas::mouseMoveEvent(QMouseEvent*me) {
     mouseY = me->y();
 
     // calculating the pointed pixel position on the image
-    emit mousePositionChange(round(mouseX / mTransferRateW * mZoom), round(mouseY / mTransferRateW * mZoom));
+    emit mousePositionChange(round(mouseX / mTransferRateW * mZoom), round(mouseY / mTransferRateH * mZoom));
 
     if(mousePressed) {
         setCursor(Qt::ClosedHandCursor);
@@ -367,12 +367,20 @@ void LabelingCanvas::mousePressEvent(QMouseEvent*me) {
         mFocusedRect = -1;
         emit boundingboxSelection("", "", "");
         
+        // calculate the clicked position on the bitmap
+        double pixPosX = mPixmapPos.x() + (double)mousePressedX / mTransferRateW * mZoom;
+        double pixPosY = mPixmapPos.y() + (double)mousePressedY / mTransferRateH * mZoom;
+        
+        // calculate the center of the canvas
+        double pixPosXC = (double)width() / 2. / mTransferRateW * mZoom;
+        double pixPosYC = (double)height() / 2. / mTransferRateH * mZoom;
+        
         // move the clicked position to the middle of the canvas
-        mPixmapPos.setX(((double)mousePressedX - width() / 2.) / mTransferRateW * mZoom);
-        mPixmapPos.setY(((double)mousePressedY - height() / 2.) / mTransferRateH * mZoom);
+        mPixmapPos.setX(pixPosX - pixPosXC);
+        mPixmapPos.setY(pixPosY - pixPosYC);
         
         // zoom the image and correct the position
-        const double newZoom = 0.2;
+        const double newZoom = 0.1;
         if(mZoom > newZoom) {
             centeredZoom(newZoom);
         }
@@ -385,11 +393,11 @@ void LabelingCanvas::mousePressEvent(QMouseEvent*me) {
 }
 
 void LabelingCanvas::centeredZoom(double newZoom) {
-    double s1 = width()  / 2. / mTransferRateW * mZoom;
-    double s2 = width()  / 2. / mTransferRateW * newZoom;
+    double s1 = width() / 2. / mTransferRateW * mZoom;
+    double s2 = width() / 2. / mTransferRateW * newZoom;
     mPixmapPos.setX(mPixmapPos.x() - (s2 - s1));
-    s1 = height()  / 2. / mTransferRateH * mZoom;
-    s2 = height()  / 2. / mTransferRateH * newZoom;
+    s1 = height() / 2. / mTransferRateH * mZoom;
+    s2 = height() / 2. / mTransferRateH * newZoom;
     mPixmapPos.setY(mPixmapPos.y() - (s2 - s1));
     mZoom = newZoom;
 }
