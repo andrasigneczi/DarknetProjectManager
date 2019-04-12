@@ -203,6 +203,7 @@ void MainWindow::listCurrentItemChanged(QListWidgetItem* current, QListWidgetIte
     // update bounding rect list
     mCanvas->setLabelsAndRects(mProject.getLabelsAndRects(index));
     boundingboxSelection("", "", "");
+    setWindowTitle(current->text());
 }
 
 void MainWindow::boundingboxSelection(string label, string position, string size) {

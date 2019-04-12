@@ -380,7 +380,7 @@ void LabelingCanvas::mousePressEvent(QMouseEvent*me) {
         mPixmapPos.setY(pixPosY - pixPosYC);
         
         // zoom the image and correct the position
-        const double newZoom = 0.1;
+        const double newZoom = 0.2;
         if(mZoom > newZoom) {
             centeredZoom(newZoom);
         }

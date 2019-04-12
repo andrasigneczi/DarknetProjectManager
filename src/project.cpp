@@ -82,6 +82,7 @@ void Project::loadTrainAndTestTxt(ifstream& file) {
             line = "";
         }
     }
+    std::sort(mTrainAndTestFiles.begin(), mTrainAndTestFiles.end());
 }
 
 void Project::loadTrainAndTestTxt() {
@@ -269,8 +270,10 @@ void Project::saveNames() {
         return;
     }
     
+    bool first = true;
     for(const string& name : mNames) {
-        names << name << endl;
+        if(first) first = false; else names << endl;
+        names << name;
     }
     names.flush();
 }
