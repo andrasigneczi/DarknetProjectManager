@@ -27,6 +27,8 @@ int main (int argc, char* argv[]) {
             app.exec();
         } catch(string str) {
             cerr << str << endl;
+        } catch(QString str) {
+            cerr << str.toUtf8().constData() << endl;
         }
         QDir::setCurrent(path);
     } else {
