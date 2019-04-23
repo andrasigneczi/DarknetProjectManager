@@ -130,7 +130,7 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
             p.setOpacity(1.);
             p.drawRect(r);
             p.drawText(r.left() + 10, r.top(),
-                       r.width(), r.height(),
+                       500, 40,
                        Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
         }
         

@@ -38,6 +38,8 @@ public:
     // The MainWindow calls this function if anything was modified and saving necessary
     void updateLabelAndRect(size_t labelId, const vector<RectAndLabel>& updatedLabelsAndRects);
 
+    const vector<string>& getNames() { return mNames; }
+    
 private:
     // main/project file loading
     void loadDataFile(string path);
