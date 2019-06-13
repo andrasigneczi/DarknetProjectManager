@@ -42,7 +42,7 @@ void LabelingCanvas::paintEvent(QPaintEvent* pe) {
             desc = QRectF(0, 0, width(), width() / sizeRate);
             src = QRectF(mPixmapPos.x(), mPixmapPos.y(), mOriginalImage.width() * mZoom, mOriginalImage.height() * mZoom);
 
-            // Let's try to extend the the height to the full canvas
+            // Let's try to extend to the height to the full canvas
             if(mZoom < 1. && desc.height() < height()) {
                 double corrSizeRate = src.height() / desc.height();
                 desc.setHeight(height());
@@ -86,7 +86,7 @@ void LabelingCanvas::drawZoomIcons(QPainter& p) {
 
 void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
     //p.setCompositionMode(QPainter::CompositionMode_Difference);
-    p.setFont(QFont("times",12));
+    p.setFont(QFont("times",12, QFont::Bold));
     QColor orange;
     orange.setNamedColor("orange");
     QBrush brYellow(Qt::GlobalColor::yellow, Qt::SolidPattern);
@@ -129,9 +129,7 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
             }
             p.setOpacity(1.);
             p.drawRect(r);
-            p.drawText(r.left() + 10, r.top(),
-                       500, 40,
-                       Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
+            p.drawText(r.left() + 10, r.top(), 500, 40, Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
         }
         
         if((int)i == mSelectedRect) {
