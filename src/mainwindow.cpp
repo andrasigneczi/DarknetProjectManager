@@ -87,6 +87,7 @@ MainWindow::MainWindow(Project& project)
     
     QPushButton* saveBtn = new QPushButton("Save All");
     QPushButton* grayBtn = new QPushButton("Invert Boxes");
+    QPushButton* exportBtn = new QPushButton("Export Small Images");
     mHideBoxesBtn = new QPushButton("Boxes Visible");
     mHideBoxesBtn->setCheckable(true);
     mLabelEdit = new MyLineEdit(mListWidget);
@@ -106,6 +107,7 @@ MainWindow::MainWindow(Project& project)
     buttonGrid->addWidget(saveBtn, 0, 0);
     buttonGrid->addWidget(grayBtn, 0, 1);
     buttonGrid->addWidget(mHideBoxesBtn, 1, 0);
+    buttonGrid->addWidget(exportBtn, 1, 1);
     toolLayout->addLayout(buttonGrid);
 
     QGridLayout* underCanvasLayout = new QGridLayout;
@@ -140,6 +142,9 @@ MainWindow::MainWindow(Project& project)
 
     QObject::connect(grayBtn, SIGNAL(pressed()),
         this, SLOT(grayPressed()));
+
+    QObject::connect(exportBtn, SIGNAL(pressed()),
+        this, SLOT(exportPressed()));
 
     QObject::connect(mHideBoxesBtn, SIGNAL(toggled(bool)),
         this, SLOT(hideBoxesToggled(bool)));
@@ -230,6 +235,27 @@ void MainWindow::savePressed() {
 
 void MainWindow::grayPressed() {
     mCanvas->switchGrayBoxBackground();
+}
+
+void MainWindow::exportPressed() {
+    QDir myDir;
+    QString folder("../EXPORT");
+    if(!myDir.exists(folder)) {
+        if(!myDir.mkdir(folder)) return;
+    }
+    const vector<string>& trainFileList = mProject.getTrainAndTestFileList();
+    size_t index = 0;
+    size_t tmpIndex = 0;
+    while(QFile::exists(QString::asprintf("%s/%06lu.png", (const char*)folder.toLocal8Bit(), tmpIndex))) ++tmpIndex;
+    for( const string& x : trainFileList) {
+        const vector<Project::RectAndLabel>& labelsAndRects = mProject.getLabelsAndRects(index++);
+        QImage img(x.c_str());
+        for(const auto& rectAndLabel : labelsAndRects) {
+            QRectF rect = LabelingCanvas::calcBoundingRec(rectAndLabel.mNormRect, img.width(), img.height());
+            QImage tmp = img.copy(rect.toRect());
+            tmp.save( QString::asprintf("%s/%06lu.png", (const char*)folder.toLocal8Bit(), tmpIndex++));
+        }
+    }
 }
 
 void MainWindow::newButtonTriggered(bool checked /*= false*/) {

@@ -24,6 +24,7 @@ public slots:
     void boundingboxSelection(string label, string position, string size);
     void savePressed();
     void grayPressed();
+    void exportPressed();
 
     // toolbar button slots
     void newButtonTriggered(bool checked = false);
