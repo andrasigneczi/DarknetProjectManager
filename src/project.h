@@ -25,9 +25,13 @@ public:
         //int      mImageWidth;
         //int      mImageHeight;
     };
-
+    enum LoadType {
+        LT_TRAIN,
+        LT_TEST,
+        LT_BOTH
+    };
     // load the datafile and the others listed  in the data 
-    void openProject(string path);
+    void openProject(string path, LoadType loadType = LT_BOTH);
     void saveProject(string path);
 
     // returns with the imagelist of the training files
@@ -46,7 +50,7 @@ private:
     // Names file contains the labels
     void loadNamesFile();
     // train.txt and test.txt file contain a list of image paths
-    void loadTrainAndTestTxt();
+    void loadTrainAndTestTxt(LoadType loadType);
     void loadTrainAndTestTxt(ifstream& file);
     // load all the txt file which contains one or more label id and bounding rect
     // description

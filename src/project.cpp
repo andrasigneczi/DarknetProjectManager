@@ -85,29 +85,36 @@ void Project::loadTrainAndTestTxt(ifstream& file) {
     std::sort(mTrainAndTestFiles.begin(), mTrainAndTestFiles.end());
 }
 
-void Project::loadTrainAndTestTxt() {
-    auto it = mDataMap.find("train");
-    if(it == mDataMap.end() || it->second.length() == 0) {
-        throw string("'train' is missing from the data file");
+void Project::loadTrainAndTestTxt(Project::LoadType loadType) {
+    ifstream file;
+    if(loadType == LT_TRAIN || loadType == LT_BOTH) {
+        auto it = mDataMap.find("train");
+        if(it == mDataMap.end() || it->second.length() == 0) {
+            throw string("'train' is missing from the data file");
+        }
+
+        file.open(it->second, ios_base::in);
+        if(!file.is_open()) {
+            throw it->second + " does not exist";
+        }
+        loadTrainAndTestTxt(file);
+        file.close();
     }
-    
-    ifstream file(it->second, ios_base::in);
-    if(!file.is_open()) {
-        throw it->second + " does not exist";
+
+    if(loadType == LT_TEST || loadType == LT_BOTH) {
+        auto it = mDataMap.find("valid");
+        if(it == mDataMap.end() || it->second.length() == 0) {
+            return;
+        }
+
+        file.close();
+        file.open(it->second, ios_base::in);
+        if(!file.is_open()) {
+            throw it->second + " does not exist";
+        }
+        loadTrainAndTestTxt(file);
+        file.close();
     }
-    loadTrainAndTestTxt(file);
-    
-    it = mDataMap.find("valid");
-    if(it == mDataMap.end() || it->second.length() == 0) {
-        return;
-    }
-    
-    file.close();
-    file.open(it->second, ios_base::in);
-    if(!file.is_open()) {
-        throw it->second + " does not exist";
-    }
-    loadTrainAndTestTxt(file);
 }
 
 void Project::loadBoundingRecFiles() {
@@ -129,7 +136,7 @@ void Project::loadBoundingRecFiles() {
         //    throw string("Can't open ") + imgPath;
         //}
         
-        cout << "Loading file " << txtPath << "\n";
+        //cout << "Loading file " << txtPath << "\n";
         string content;
         getline(txt, content, (char) txt.eof());
         content = trim(content);
@@ -195,10 +202,10 @@ void Project::parseLabelFileString(string content) {
     mRectsAndLabels.push_back(rectsAndLabels);
 }
 
-void Project::openProject(string path) {
+void Project::openProject(string path, Project::LoadType loadType) {
     loadDataFile(path);
     loadNamesFile();
-    loadTrainAndTestTxt();
+    loadTrainAndTestTxt(loadType);
     loadBoundingRecFiles();
 }
 
