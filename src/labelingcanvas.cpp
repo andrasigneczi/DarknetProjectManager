@@ -320,7 +320,7 @@ void LabelingCanvas::mouseMoveEvent(QMouseEvent*me) {
                 r = transfer(r);
                 
                 if(r.contains(mouseX, mouseY)) {
-                    mSelectedRect = i;
+                    mSelectedRect = (int)i;
                     break;
                 }
             }
@@ -422,8 +422,19 @@ void LabelingCanvas::mouseReleaseEvent(QMouseEvent*me) {
 
 void LabelingCanvas::wheelEvent(QWheelEvent *event) {
     // Let's change the selected rect in case of overlapping
-    std::cout << "LabelingCanvas::wheelEvent\n";
-    nextSelectedRectUnderMouse();
+    if(event->modifiers() == Qt::ControlModifier) {
+        if(event->delta() > 0 && mZoom > 0.1 + 1e-6) {
+            mFocusedRect = -1;
+            emit boundingboxSelection("", "", "");
+            centeredZoom(mZoom - 0.1);
+        } else if(event->delta() < 0) {
+            mFocusedRect = -1;
+            emit boundingboxSelection("", "", "");
+            centeredZoom(mZoom + 0.1);
+        }
+    } else {
+        nextSelectedRectUnderMouse();
+    }
     repaint();
     QWidget::wheelEvent(event);
 }
@@ -441,7 +452,7 @@ void LabelingCanvas::nextSelectedRectUnderMouse() {
         r = transfer(r);
         
         if(r.contains(mouseX, mouseY)) {
-            mSelectedRect = pos;
+            mSelectedRect = (int)pos;
             break;
         }
     }
@@ -537,7 +548,7 @@ void LabelingCanvas::addNewActiveBox() {
     newItem.mRectOrLabelStatus = NEW;
     mRectAndLabelData.push_back(newItem);
 
-    mFocusedRect = mRectAndLabelData.size() - 1;
+    mFocusedRect = (int)mRectAndLabelData.size() - 1;
     updateBoundingBoxData(mFocusedRect, newItem.mOriginalRectAndLabel.mLabel);
     repaint();
 }
@@ -554,7 +565,7 @@ void LabelingCanvas::duplicateActiveBox() {
     newItem.mRectOrLabelStatus = NEW;
     mRectAndLabelData.push_back(newItem);
 
-    mFocusedRect = mRectAndLabelData.size() - 1;
+    mFocusedRect = (int)mRectAndLabelData.size() - 1;
     updateBoundingBoxData(mFocusedRect, newItem.mOriginalRectAndLabel.mLabel);
     repaint();
 }
