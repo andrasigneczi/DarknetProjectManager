@@ -74,6 +74,7 @@ signals:
 
 public slots:
     void labelChanged(const QString &text);
+    void filterTextEdited(const QString &text);
 
 private:
     void drawRectsAndLabels(QPainter& p);
@@ -130,6 +131,7 @@ private:
     bool mGrayBoxBackground;
     bool mFocusedZoomOn;
     bool mBoxesHidden;
+    QString filterText;
 };
 
 #endif // __LABELINGCANVAS_H__

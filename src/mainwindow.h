@@ -44,6 +44,7 @@ private:
     Project& mProject;
     LabelingCanvas* mCanvas;
     QLineEdit* mLabelEdit;
+    QLineEdit* mFilterEdit;
     QListWidget* mListWidget;
     QLabel* mPosition;
     QLabel* mSize;

@@ -100,6 +100,7 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
     
     for(size_t i = 0; i < mRectAndLabelData.size(); ++i) {
         if(rectOrLabelStatus(i) == DELETED) continue;
+        if(filterText.length() > 0 && originalRectAndLabel(i).mLabel != filterText.toStdString()) continue;
         if((int)i == mSelectedRect) {
             p.setPen(QPen(brGreen, tickness, Qt::SolidLine));
         }
@@ -129,7 +130,7 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
             }
             p.setOpacity(1.);
             p.drawRect(r);
-            p.drawText(r.left() + 10, r.top(), 500, 40, Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
+            p.drawText(r.left(), r.top() - 20, 500, 40, Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
         }
         
         if((int)i == mSelectedRect) {
@@ -360,7 +361,7 @@ void LabelingCanvas::mousePressEvent(QMouseEvent*me) {
         mZoom = 1.;
     } else if(QRect(width()-26, 105, mZoomBox.width(), mZoomBox.height()).contains(mousePressedX, mousePressedY)) {
         mFocusedZoomOn = !mFocusedZoomOn;
-    } else if(mFocusedZoomOn) {
+    } else if(mFocusedZoomOn || me->modifiers() == Qt::ControlModifier) {
         mFocusedZoomOn = false;
         mFocusedRect = -1;
         emit boundingboxSelection("", "", "");
@@ -656,5 +657,10 @@ void LabelingCanvas::switchGrayBoxBackground() {
 
 void LabelingCanvas::hideBoxes(bool hide) {
     mBoxesHidden = hide;
+    repaint();
+}
+
+void LabelingCanvas::filterTextEdited(const QString &text) {
+    filterText = text;
     repaint();
 }

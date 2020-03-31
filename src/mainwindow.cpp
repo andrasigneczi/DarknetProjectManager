@@ -91,15 +91,18 @@ MainWindow::MainWindow(Project& project)
     mHideBoxesBtn = new QPushButton("Boxes Visible");
     mHideBoxesBtn->setCheckable(true);
     mLabelEdit = new MyLineEdit(mListWidget);
+    mFilterEdit = new QLineEdit();
     QVBoxLayout* toolLayout = new QVBoxLayout;
 
     QGridLayout* lineLayout = new QGridLayout;
     lineLayout->addWidget(new QLabel("Label:"), 0, 0);
     lineLayout->addWidget(mLabelEdit, 0, 1);
-    lineLayout->addWidget(new QLabel("Position:"), 1, 0);
-    lineLayout->addWidget(new QLabel("Size:"), 2, 0);
-    lineLayout->addWidget(mPosition = new QLabel(""), 1, 1);
-    lineLayout->addWidget(mSize = new QLabel(""), 2, 1);
+    lineLayout->addWidget(new QLabel("Filter:"), 1, 0);
+    lineLayout->addWidget(mFilterEdit, 1, 1);
+    lineLayout->addWidget(new QLabel("Position:"), 2, 0);
+    lineLayout->addWidget(new QLabel("Size:"), 3, 0);
+    lineLayout->addWidget(mPosition = new QLabel(""), 2, 1);
+    lineLayout->addWidget(mSize = new QLabel(""), 3, 1);
 
     toolLayout->addLayout(lineLayout);
     
@@ -151,6 +154,9 @@ MainWindow::MainWindow(Project& project)
         
     QObject::connect(mLabelEdit, SIGNAL(textChanged(const QString &)),
         mCanvas, SLOT(labelChanged(const QString &)));
+
+    QObject::connect(mFilterEdit, SIGNAL(textEdited(const QString &)),
+        mCanvas, SLOT(filterTextEdited(const QString &)));
 
     QObject::connect(newAction, SIGNAL(triggered(bool)),
         this, SLOT(newButtonTriggered(bool)));
