@@ -130,7 +130,9 @@ void LabelingCanvas::drawRectsAndLabels(QPainter& p) {
             }
             p.setOpacity(1.);
             p.drawRect(r);
-            p.drawText(r.left(), r.top() - 20, 500, 40, Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
+            if(filterText.length() == 0) {
+                p.drawText(r.left(), r.top() - 20, 500, 40, Qt::AlignLeft, tr(originalRectAndLabel(i).mLabel.c_str()));
+            }
         }
         
         if((int)i == mSelectedRect) {
